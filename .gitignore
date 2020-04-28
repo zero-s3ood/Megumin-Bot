@@ -1,0 +1,8 @@
+# test file that I use to learn about python
+test.py
+
+# environment file the includes relevant api keys
+.env
+
+#ignore pythons cache of compiled codde
+__pycache__

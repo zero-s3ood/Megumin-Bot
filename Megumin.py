@@ -30,10 +30,21 @@ zones = { 'Vancouver': timezone('America/Vancouver'),
 async def on_ready():
     print('Bot is ready.')
 
-NewsFeed = feedparser.parse("https://www.theguardian.com/uk/rss")
-
-entry = NewsFeed.entries[1]
-print ('Post Title :',entry.title)
+@client.command()
+async def news(ctx):
+    await ctx.send("Headlines from The Guardian: \n \n")
+    NewsFeed1 = feedparser.parse("https://www.theguardian.com/rss")
+    for entry in NewsFeed1.entries[:5]:
+        await ctx.send(entry.title)
+    await ctx.send("Headlines from New York Times (World): \n \n")
+    NewsFeed2 = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/World.xml")
+    for entry in NewsFeed2.entries[:5]:
+        await ctx.send(entry.title)
+    await ctx.send("Headlines from New York Times (US): \n \n")
+    NewsFeed3 = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/US.xml")
+    for entry in NewsFeed3.entries[:5]:
+        await ctx.send(entry.title)
+    
 
 @client.command()
 async def ping(ctx):

@@ -40,9 +40,10 @@ async def wtime(ctx):
         await ctx.send(f'The time in {zone} is ' + datetime.now(zones[zone]).strftime('%H:%M'))
 
 @client.command()
-async def news(ctx, feed):
-    for story in news_feed(feed):
-        await ctx.send(story.title)
+async def news(ctx, feed = 'The Guardian'):
+    for story in services.news_feed(feed, 10):
+        embed = discord.Embed(title=story.title, url=story['link'])
+        await ctx.send(embed=embed)
 
 
 @client.command()
@@ -153,7 +154,7 @@ async def clear(ctx, amount=10):
 @client.command()
 async def covid(ctx, country = ''):
     await ctx.send("Getting covid stats...")
-    data = services.covid_stats(country)
+    data = services.covid_stats(country.capitalize())
     data['lastChecked'] = datetime.fromisoformat(data['lastChecked']).strftime('%c')
     data['lastReported'] = datetime.fromisoformat(data['lastReported']).strftime('%c')
     message = f"The Covid Stats for {country.capitalize() if country != '' else 'The World' }\n"
@@ -170,5 +171,4 @@ def rolls(rounds=1):
         rolls.append(random.randrange(1,20,1))
     return rolls
 
-print(DISCORD_KEY)
 client.run(DISCORD_KEY)

@@ -13,6 +13,6 @@ def covid_stats(country = ''):
     res = requests.request('GET', 'https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/total', params=params, headers=headers)
     return res.json()['data']
 
-def news_feed(feed = "The Guardian", limit = 5):
+def news_feed(feed, limit = 5):
     news = feedparser.parse(newsfeed[feed])
     return news.entries[:limit]

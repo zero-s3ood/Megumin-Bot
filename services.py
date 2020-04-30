@@ -1,7 +1,8 @@
 import requests
 import os
 
-RAPIDSOS_KEY= os.getenv('RAPIDSOS_API_KEY')
+RAPIDSOS_KEY= ""
+
 
 def covid_stats(country = ''):
     params= {'country': country}

@@ -10,8 +10,8 @@ import os
 import services
 from datetime import datetime
 from discord.ext import commands
+import feedparser
 
-DISCORD_KEY = os.getenv('DISCORD_API_KEY')
 
 client = commands.Bot(command_prefix='.')
 
@@ -25,10 +25,15 @@ zones = { 'Vancouver': timezone('America/Vancouver'),
             "Fort McMurray": timezone('America/Edmonton') }
 
 
+
 @client.event
 async def on_ready():
     print('Bot is ready.')
 
+NewsFeed = feedparser.parse("https://www.theguardian.com/uk/rss")
+
+entry = NewsFeed.entries[1]
+print ('Post Title :',entry.title)
 
 @client.command()
 async def ping(ctx):
@@ -166,4 +171,4 @@ def rolls(rounds=1):
         rolls.append(random.randrange(1,20,1))
     return rolls
 
-client.run(DISCORD_KEY)
+client.run("")

@@ -10,8 +10,6 @@ import os
 import services
 from datetime import datetime
 from discord.ext import commands
-import feedparser
-
 
 client = commands.Bot(command_prefix='.')
 
@@ -24,27 +22,11 @@ zones = { 'Vancouver': timezone('America/Vancouver'),
             "Lisbon": timezone('Europe/Lisbon'),
             "Fort McMurray": timezone('America/Edmonton') }
 
-
+DISCORD_KEY = os.getenv('DISCORD_API_KEY')
 
 @client.event
 async def on_ready():
     print('Bot is ready.')
-
-@client.command()
-async def news(ctx):
-    await ctx.send("Headlines from The Guardian: \n \n")
-    NewsFeed1 = feedparser.parse("https://www.theguardian.com/rss")
-    for entry in NewsFeed1.entries[:5]:
-        await ctx.send(entry.title)
-    await ctx.send("Headlines from New York Times (World): \n \n")
-    NewsFeed2 = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/World.xml")
-    for entry in NewsFeed2.entries[:5]:
-        await ctx.send(entry.title)
-    await ctx.send("Headlines from New York Times (US): \n \n")
-    NewsFeed3 = feedparser.parse("https://rss.nytimes.com/services/xml/rss/nyt/US.xml")
-    for entry in NewsFeed3.entries[:5]:
-        await ctx.send(entry.title)
-    
 
 @client.command()
 async def ping(ctx):
@@ -56,6 +38,12 @@ async def wtime(ctx):
     """World Clock for Chat Memebers"""
     for zone in zones.keys():
         await ctx.send(f'The time in {zone} is ' + datetime.now(zones[zone]).strftime('%H:%M'))
+
+@client.command()
+async def news(ctx, feed):
+    for story in news_feed(feed):
+        await ctx.send(story.title)
+
 
 @client.command()
 async def rolla(ctx, arg=0, arg2=0):
@@ -182,4 +170,5 @@ def rolls(rounds=1):
         rolls.append(random.randrange(1,20,1))
     return rolls
 
-client.run("")
+print(DISCORD_KEY)
+client.run(DISCORD_KEY)

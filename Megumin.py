@@ -11,8 +11,6 @@ import services
 from datetime import datetime
 from discord.ext import commands
 
-DISCORD_KEY = os.getenv('DISCORD_API_KEY')
-
 client = commands.Bot(command_prefix='.')
 
 from datetime import datetime
@@ -24,11 +22,11 @@ zones = { 'Vancouver': timezone('America/Vancouver'),
             "Lisbon": timezone('Europe/Lisbon'),
             "Fort McMurray": timezone('America/Edmonton') }
 
+DISCORD_KEY = os.getenv('DISCORD_API_KEY')
 
 @client.event
 async def on_ready():
     print('Bot is ready.')
-
 
 @client.command()
 async def ping(ctx):
@@ -40,6 +38,13 @@ async def wtime(ctx):
     """World Clock for Chat Memebers"""
     for zone in zones.keys():
         await ctx.send(f'The time in {zone} is ' + datetime.now(zones[zone]).strftime('%H:%M'))
+
+@client.command()
+async def news(ctx, feed = 'The Guardian'):
+    for story in services.news_feed(feed, 10):
+        embed = discord.Embed(title=story.title, url=story['link'])
+        await ctx.send(embed=embed)
+
 
 @client.command()
 async def rolla(ctx, arg=0, arg2=0):
@@ -149,7 +154,7 @@ async def clear(ctx, amount=10):
 @client.command()
 async def covid(ctx, country = ''):
     await ctx.send("Getting covid stats...")
-    data = services.covid_stats(country)
+    data = services.covid_stats(country.capitalize())
     data['lastChecked'] = datetime.fromisoformat(data['lastChecked']).strftime('%c')
     data['lastReported'] = datetime.fromisoformat(data['lastReported']).strftime('%c')
     message = f"The Covid Stats for {country.capitalize() if country != '' else 'The World' }\n"
